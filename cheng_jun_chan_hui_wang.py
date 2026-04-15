@@ -120,7 +120,7 @@ with tab2:
     st.session_state.tab = 2
     
 with st.sidebar:
-    if st.session_state.get("tab",1):
+    if st.session_state.get("tab") == 1:
         st.sidebar.title("功能区")
         if st.button("+ 新建笔记"):
             st.session_state.current_index = -1
@@ -131,7 +131,7 @@ with st.sidebar:
             if st.button(f"{preview}  \n{note['date']}", key=f"note_{i}"):
                 st.session_state.current_index = i
                 st.session_state.editing = False
-    elif st.session_state.get("tab",2):
+    elif st.session_state.get("tab") == 2:
         selection = st.selectbox(label="有关于她",options=["点滴美好","她之于我","弥补承诺"])
-    elif st.session_state.get("tab",3):
+    elif st.session_state.get("tab") == 3:
         pass
