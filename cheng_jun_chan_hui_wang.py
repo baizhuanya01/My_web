@@ -16,27 +16,26 @@ def save_notes(notes):
 if "editing" not in st.session_state:
     st.session_state.editing = False
 
-#if st.session_state.get("snow",False):
-    #st.snow()
-    #st.session_state.snow = False
-#if st.session_state.get("balloons",False) == True:
-    #st.balloons()
-    #st.session_state.balloons = False
+current_tab = st.radio(
+    "选择页面", 
+    ["忏悔间", "我想她了"], 
+    horizontal=True, 
+    label_visibility="collapsed" # 隐藏标题，让它看起来更像 Tab
+)
 
-st.title("晨峻忏悔网")
+st.title("海洋的悔恨")
 st.write("晨峻，今天的你忏悔了吗。")
 
 notes = load_notes()
 
 tab1, tab2= st.tabs(["忏悔间", "我想她了"])
     
-with tab1:
-    "这里是用来给你进行学习以及生活上的反思的。\n当然也可以把笔记传上来，我会保留这个区域的访问权限。"
+if current_tab == "忏悔间":
+    st.write("这里是用来给你进行学习以及生活上的反思的。\n当然也可以把笔记传上来，我会保留这个区域的访问权限。")
 
     st.divider()
 
     idx = st.session_state.get("current_index", None)
-    st.session_state.tab = 1
     
     if st.session_state.editing == True:
         if idx is None:
@@ -110,28 +109,25 @@ with tab1:
                 notes[idx]["comments"].append(new_c)
                 save_notes(notes)
                 st.rerun()
-                
 
-with tab2:
-    "这里是用来给你宣泄有关于她的情绪的，我会找办法把这里锁上只向你开放。"
+if current_tab == "我想她了":
+    st.write("这里是用来给你宣泄有关于她的情绪的，我会找办法把这里锁上只向你开放。")
     st.divider()
 
     idx = st.session_state.get("current_index", None)
-    st.session_state.tab = 2
     
 with st.sidebar:
-    if st.session_state.get("tab") == 1:
+    if current_tab == "忏悔间":
         st.sidebar.title("功能区")
         if st.button("+ 新建笔记"):
             st.session_state.current_index = -1
             st.session_state.editing = True
-        
         for i, note in enumerate(notes):
             preview = note["title"][:15] if note["title"] else "空笔记"
             if st.button(f"{preview}  \n{note['date']}", key=f"note_{i}"):
                 st.session_state.current_index = i
                 st.session_state.editing = False
-    elif st.session_state.get("tab") == 2:
+    elif current_tab == "我想她了":
         selection = st.selectbox(label="有关于她",options=["点滴美好","她之于我","弥补承诺"])
-    elif st.session_state.get("tab") == 3:
-        pass
+    # elif current_tab == "小说":
+    #     pass
