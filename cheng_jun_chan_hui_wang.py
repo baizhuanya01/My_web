@@ -16,6 +16,13 @@ def save_notes(notes):
 if "editing" not in st.session_state:
     st.session_state.editing = False
 
+if st.session_state.snow == True:
+    st.snow()
+    st.session_state.snow = False
+if st.session_state.balloons == True:
+    st.balloons()
+    st.session_state.balloons = False
+
 st.title("晨峻忏悔网")
 st.write("晨峻，今天的你忏悔了吗。")
 
@@ -67,7 +74,7 @@ with tab1:
                     })
                     save_notes(notes)
                     st.session_state.current_index = len(notes) - 1
-                    st.snow()
+                    st.session_state.snow =True
                     st.rerun()
                 else:
                     notes[idx]["title"] = title
@@ -97,7 +104,7 @@ with tab1:
                     save_notes(notes)
                     st.session_state.current_index = None
                     st.session_state.editing = False
-                    st.balloons()
+                    st.session_state.balloons = True
                     st.rerun()
 
             st.divider()
