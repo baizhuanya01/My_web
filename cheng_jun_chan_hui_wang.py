@@ -2,7 +2,9 @@ import streamlit as st
 import json, os, datetime
 
 NOTES_FILE = "notes.json"
+st.set_page_config(layout="wide")
 
+@st.cache_data
 def load_notes():
     if not os.path.exists(NOTES_FILE):
         return []
@@ -57,7 +59,7 @@ if current_tab == "忏悔间":
                     })
                     save_notes(notes)
                     st.session_state.current_index = len(notes) - 1
-                    #st.session_state.snow =True
+                    st.cache_data.clear()
                     st.rerun()
                 else:
                     notes[idx]["title"] = title
@@ -87,7 +89,7 @@ if current_tab == "忏悔间":
                     save_notes(notes)
                     st.session_state.current_index = None
                     st.session_state.editing = False
-                    #st.session_state.balloons = True
+                    st.cache_data.clear()
                     st.rerun()
 
             st.divider()
@@ -100,14 +102,20 @@ if current_tab == "忏悔间":
                 with st.chat_message("user(zhanwei)"):
                     st.write(f"*{c["time"]}*")
                     st.write(c["text"])
-            c_text = st.chat_input(placeholder="追加审判中~请对告解者作出评判吧", height=200)
-            if c_text:
+            with st.form("my_comment_form", clear_on_submit=True):
+                c_text = st.text_input(label="评价罪业", placeholder="追加审判中~请对告解者作出评判吧", label_visibility="collapsed")
+                
+                col_1, col_2 = st.columns([1, 5])
+                with col_1:
+                    submit_comment = st.form_submit_button("审判")
+            if submit_comment and c_text:
                 new_c = {
                     "text": c_text,
                     "time": datetime.datetime.now().strftime("%m/%d %H:%M")
                 }
                 notes[idx]["comments"].append(new_c)
                 save_notes(notes)
+                st.cache_data.clear()
                 st.rerun()
 
 if current_tab == "我想她了":
@@ -118,16 +126,23 @@ if current_tab == "我想她了":
     
 with st.sidebar:
     if current_tab == "忏悔间":
-        st.sidebar.title("功能区")
+        st.title("功能区")
         if st.button("+ 新建笔记"):
             st.session_state.current_index = -1
             st.session_state.editing = True
-        for i, note in enumerate(notes):
-            preview = note["title"][:15] if note["title"] else "空笔记"
-            if st.button(f"{preview}  \n{note['date']}", key=f"note_{i}"):
-                st.session_state.current_index = i
-                st.session_state.editing = False
-    elif current_tab == "我想她了":
-        selection = st.selectbox(label="有关于她",options=["点滴美好","她之于我","弥补承诺"])
+        
+        if notes:
+            options = [f"{n['title']} ({n['date']})" for n in notes]
+            selected_index = st.selectbox(
+                "选择往日告解", 
+                range(len(notes)), 
+                format_func=lambda x: options[x],
+                index=st.session_state.get("current_index", 0) if st.session_state.get("current_index", -1) != -1 else 0
+            )
+            if st.session_state.get("current_index") != selected_index:
+                st.session_state.current_index = selected_index
+                st.rerun()
+        elif current_tab == "我想她了":
+            selection = st.selectbox(label="有关于她",options=["点滴美好","她之于我","弥补承诺"])
     # elif current_tab == "小说":
     #     pass
