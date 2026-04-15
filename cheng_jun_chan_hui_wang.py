@@ -67,6 +67,7 @@ with tab1:
                     })
                     save_notes(notes)
                     st.session_state.current_index = len(notes) - 1
+                    st.snow()
                     st.rerun()
                 else:
                     notes[idx]["title"] = title
@@ -96,6 +97,7 @@ with tab1:
                     save_notes(notes)
                     st.session_state.current_index = None
                     st.session_state.editing = False
+                    st.balloons()
                     st.rerun()
 
             st.divider()
