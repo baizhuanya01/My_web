@@ -40,7 +40,7 @@ with st.sidebar:
                 st.session_state.current_index = i
                 st.session_state.editing = False
     elif st.session_state.get("tab",2):
-        selection = st.selectbox(label="有关于她",["点滴美好","她之于我","弥补承诺"])
+        selection = st.selectbox(label="有关于她",options=["点滴美好","她之于我","弥补承诺"])
     elif st.session_state.get("tab",3):
         pass
 
