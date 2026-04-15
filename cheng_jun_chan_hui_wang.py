@@ -113,7 +113,7 @@ with tab1:
                 
 
 with tab2:
-    "这里是用来给你宣泄有关于她的情绪的，我会找办法把这里锁上只向你开放。
+    "这里是用来给你宣泄有关于她的情绪的，我会找办法把这里锁上只向你开放。"
     st.divider()
 
     idx = st.session_state.get("current_index", None)
