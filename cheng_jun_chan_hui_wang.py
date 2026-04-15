@@ -28,7 +28,7 @@ st.write("晨峻，今天的你忏悔了吗。")
 
 notes = load_notes()
 with st.sidebar:
-    if st.session_state.get("tab",1)：
+    if st.session_state.get("tab",1):
         st.sidebar.title("功能区")
         if st.button("+ 新建笔记"):
             st.session_state.current_index = -1
