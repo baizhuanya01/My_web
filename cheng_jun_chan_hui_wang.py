@@ -27,24 +27,8 @@ st.title("晨峻忏悔网")
 st.write("晨峻，今天的你忏悔了吗。")
 
 notes = load_notes()
-with st.sidebar:
-    if st.session_state.get("tab",1):
-        st.sidebar.title("功能区")
-        if st.button("+ 新建笔记"):
-            st.session_state.current_index = -1
-            st.session_state.editing = True
-        
-        for i, note in enumerate(notes):
-            preview = note["title"][:15] if note["title"] else "空笔记"
-            if st.button(f"{preview}  \n{note['date']}", key=f"note_{i}"):
-                st.session_state.current_index = i
-                st.session_state.editing = False
-    elif st.session_state.get("tab",2):
-        selection = st.selectbox(label="有关于她",options=["点滴美好","她之于我","弥补承诺"])
-    elif st.session_state.get("tab",3):
-        pass
 
-tab1, tab2= st.tabs(["忏悔间","我想她了"])
+tab1, tab2= st.tabs(["忏悔间", "我想她了"])
     
 with tab1:
     "这里是用来给你进行学习以及生活上的反思的。\n当然也可以把笔记传上来，我会保留这个区域的访问权限。"
@@ -129,8 +113,25 @@ with tab1:
                 
 
 with tab2:
-    "这里是用来给你宣泄有关于她的情绪的，我会找办法把这里锁上只向你开放。"
+    "这里是用来给你宣泄有关于她的情绪的，我会找办法把这里锁上只向你开放。
     st.divider()
 
     idx = st.session_state.get("current_index", None)
     st.session_state.tab = 2
+    
+with st.sidebar:
+    if st.session_state.get("tab",1)：
+        st.sidebar.title("功能区")
+        if st.button("+ 新建笔记"):
+            st.session_state.current_index = -1
+            st.session_state.editing = True
+        
+        for i, note in enumerate(notes):
+            preview = note["title"][:15] if note["title"] else "空笔记"
+            if st.button(f"{preview}  \n{note['date']}", key=f"note_{i}"):
+                st.session_state.current_index = i
+                st.session_state.editing = False
+    elif st.session_state.get("tab",2):
+        selection = st.selectbox(label="有关于她",["点滴美好","她之于我","弥补承诺"])
+    elif st.session_state.get("tab",3):
+        pass
