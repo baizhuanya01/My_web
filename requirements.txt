@@ -1,1 +1,1 @@
-strestreamlit==1.56.0
+streamlit==1.56.0
