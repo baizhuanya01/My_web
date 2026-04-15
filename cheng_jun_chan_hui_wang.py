@@ -29,8 +29,6 @@ st.title("海洋的悔恨")
 st.write("晨峻，今天的你忏悔了吗。")
 
 notes = load_notes()
-
-tab1, tab2= st.tabs(["忏悔间", "我想她了"])
     
 if current_tab == "忏悔间":
     st.write("这里是用来给你进行学习以及生活上的反思的。\n当然也可以把笔记传上来，我会保留这个区域的访问权限。")
@@ -142,7 +140,7 @@ with st.sidebar:
             if st.session_state.get("current_index") != selected_index:
                 st.session_state.current_index = selected_index
                 st.rerun()
-        elif current_tab == "我想她了":
-            selection = st.selectbox(label="有关于她",options=["点滴美好","她之于我","弥补承诺"])
+    elif current_tab == "我想她了":
+        selection = st.selectbox(label="有关于她",options=["点滴美好","她之于我","弥补承诺"])
     # elif current_tab == "小说":
     #     pass
