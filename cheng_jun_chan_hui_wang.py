@@ -16,33 +16,33 @@ def save_notes(notes):
 if "editing" not in st.session_state:
     st.session_state.editing = False
 
-if st.session_state.get("snow",False):
-    st.snow()
-    st.session_state.snow = False
-if st.session_state.get("balloons",False) == True:
-    st.balloons()
-    st.session_state.balloons = False
+#if st.session_state.get("snow",False):
+    #st.snow()
+    #st.session_state.snow = False
+#if st.session_state.get("balloons",False) == True:
+    #st.balloons()
+    #st.session_state.balloons = False
 
 st.title("晨峻忏悔网")
 st.write("晨峻，今天的你忏悔了吗。")
 
 notes = load_notes()
 with st.sidebar:
-    st.sidebar.title("功能区")
-    if st.button("+ 新建笔记"):
-        st.session_state.current_index = -1
-        st.session_state.editing = True
-    
-    for i, note in enumerate(notes):
-        preview = note["title"][:15] if note["title"] else "空笔记"
-        if st.button(f"{preview}  \n{note['date']}", key=f"note_{i}"):
-            st.session_state.current_index = i
-            st.session_state.editing = False
-
-# add_selectbox = st.sidebar.selectbox(
-#     "你想要什么？",
-#     ("忏悔","和她的回忆", "随笔")
-# )
+    if st.session_state.get("tab",1)：
+        st.sidebar.title("功能区")
+        if st.button("+ 新建笔记"):
+            st.session_state.current_index = -1
+            st.session_state.editing = True
+        
+        for i, note in enumerate(notes):
+            preview = note["title"][:15] if note["title"] else "空笔记"
+            if st.button(f"{preview}  \n{note['date']}", key=f"note_{i}"):
+                st.session_state.current_index = i
+                st.session_state.editing = False
+    elif st.session_state.get("tab",2):
+        selection = st.selectbox(label="有关于她",["点滴美好","她之于我","弥补承诺"])
+    elif st.session_state.get("tab",3):
+        pass
 
 tab1, tab2= st.tabs(["忏悔间", "我想她了"])
     
@@ -52,7 +52,8 @@ with tab1:
     st.divider()
 
     idx = st.session_state.get("current_index", None)
-
+    st.session_state.tab = 1
+    
     if st.session_state.editing == True:
         if idx is None:
             st.info("你的罪业正在每一秒的颓唐中持续累积.ing")
@@ -62,8 +63,7 @@ with tab1:
             de_content = "" if new else notes[idx]["content"]
             title = st.text_input("罪业",value=de_title,placeholder="请为罪业命名")
             content = st.text_area("悔恨",value=de_content,placeholder="向天使安安大人忏悔些什么吧...", height=400)
-            # if not new:
-            #     comment = st.text_area("审判", value=de_comments, placeholder="追加审判中~请对告解者作出评判吧", height=200)
+
             if st.button("保存"):
                 if new:
                     notes.append({
@@ -74,7 +74,7 @@ with tab1:
                     })
                     save_notes(notes)
                     st.session_state.current_index = len(notes) - 1
-                    st.session_state.snow =True
+                    #st.session_state.snow =True
                     st.rerun()
                 else:
                     notes[idx]["title"] = title
@@ -104,7 +104,7 @@ with tab1:
                     save_notes(notes)
                     st.session_state.current_index = None
                     st.session_state.editing = False
-                    st.session_state.balloons = True
+                    #st.session_state.balloons = True
                     st.rerun()
 
             st.divider()
@@ -129,4 +129,8 @@ with tab1:
                 
 
 with tab2:
-    "这里是用来给你宣泄有关于她的情绪的，我会找办法把这里锁上只向你开放。"
+    "这里是用来给你宣泄有关于她的情绪的，我会找办法把这里锁上只向你开放。
+    st.divider()
+
+    idx = st.session_state.get("current_index", None)
+    st.session_state.tab = 2
