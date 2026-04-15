@@ -2,6 +2,8 @@ import streamlit as st
 import json, os, datetime
 
 NOTES_FILE = "notes.json"
+st.session_state.snow = False
+st.session_state.balloons = False
 
 def load_notes():
     if not os.path.exists(NOTES_FILE):
