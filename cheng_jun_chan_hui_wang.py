@@ -28,7 +28,10 @@ current_tab = st.radio(
 st.title("海洋的悔恨")
 st.write("晨峻，今天的你忏悔了吗。")
 
-notes = load_notes()
+if "notes" not in st.session_state:
+    st.session_state.notes = load_notes()
+notes = st.session_state.notes
+
     
 if current_tab == "忏悔间":
     st.write("这里是用来给你进行学习以及生活上的反思的。\n当然也可以把笔记传上来，我会保留这个区域的访问权限。")
@@ -53,11 +56,11 @@ if current_tab == "忏悔间":
                         "title": title,
                         "content": content,
                         "date": datetime.datetime.now().strftime("%m/%d %H:%M"),
-                        "comment": []
+                        "comments": []
                     })
                     save_notes(notes)
                     st.session_state.current_index = len(notes) - 1
-                    st.cache_data.clear()
+                    load_notes.clear()
                     st.rerun()
                 else:
                     notes[idx]["title"] = title
@@ -87,7 +90,7 @@ if current_tab == "忏悔间":
                     save_notes(notes)
                     st.session_state.current_index = None
                     st.session_state.editing = False
-                    st.cache_data.clear()
+                    load_notes.clear()
                     st.rerun()
 
             st.divider()
@@ -113,7 +116,7 @@ if current_tab == "忏悔间":
                 }
                 notes[idx]["comments"].append(new_c)
                 save_notes(notes)
-                st.cache_data.clear()
+                load_notes.clear()
                 st.rerun()
 
 if current_tab == "我想她了":
@@ -131,12 +134,15 @@ with st.sidebar:
         
         if notes:
             options = [f"{n['title']} ({n['date']})" for n in notes]
+            current_idx = st.session_state.get("current_index")
+            safe_index = current_idx if (current_idx is not None and current_idx != -1) else 0
             selected_index = st.selectbox(
                 "选择往日告解", 
                 range(len(notes)), 
                 format_func=lambda x: options[x],
-                index=st.session_state.get("current_index", 0) if st.session_state.get("current_index", -1) != -1 else 0
+                index=safe_index
             )
+
             if st.session_state.get("current_index") != selected_index:
                 st.session_state.current_index = selected_index
                 st.rerun()
