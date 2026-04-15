@@ -44,7 +44,7 @@ with st.sidebar:
     elif st.session_state.get("tab",3):
         pass
 
-tab1, tab2= st.tabs(["忏悔间", "我想她了"])
+tab1, tab2= st.tabs(["忏悔间","我想她了"])
     
 with tab1:
     "这里是用来给你进行学习以及生活上的反思的。\n当然也可以把笔记传上来，我会保留这个区域的访问权限。"
