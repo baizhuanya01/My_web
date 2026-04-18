@@ -25,7 +25,7 @@ current_tab = st.radio(
     label_visibility="collapsed" # 隐藏标题，让它看起来更像 Tab
 )
 
-st.title("海洋的悔恨")
+st.title("Ocegret Archive")
 st.write("晨峻，今天的你忏悔了吗。")
 
 if "notes" not in st.session_state:
@@ -101,7 +101,7 @@ if current_tab == "忏悔间":
 
             for c in note["comments"]:
                 with st.chat_message("user(zhanwei)"):
-                    st.write(f"*{c["time"]}*")
+                    st.write(f"*{c['time']}*")
                     st.write(c["text"])
             with st.form("my_comment_form", clear_on_submit=True):
                 c_text = st.text_input(label="评价罪业", placeholder="追加审判中~请对告解者作出评判吧", label_visibility="collapsed")
