@@ -22,7 +22,7 @@ current_tab = st.radio(
     "选择页面", 
     ["忏悔间", "我想她了"], 
     horizontal=True, 
-    label_visibility="collapsed" # 隐藏标题，让它看起来更像 Tab
+    label_visibility="collapsed"
 )
 
 st.title("Ocegret Archive")
@@ -127,8 +127,7 @@ if current_tab == "我想她了":
     
 with st.sidebar:
     if current_tab == "忏悔间":
-        st.title("功能区")
-        if st.button("+ 新建笔记"):
+        if st.button("新的告解"):
             st.session_state.current_index = -1
             st.session_state.editing = True
         
