@@ -18,10 +18,6 @@ def update_and_save(notes_data):
         json.dump(notes_data, f, ensure_ascii=False, indent=2)
     st.session_state.notes = notes_data
 
-def save_notes(notes):
-    with open(NOTES_FILE, "w", encoding="utf-8") as f:
-        json.dump(notes, f, ensure_ascii=False, indent=2)
-
 if "editing" not in st.session_state:
     st.session_state.editing = False
 
@@ -65,7 +61,7 @@ if current_tab == "忏悔间":
                         "date": datetime.datetime.now().strftime("%m/%d %H:%M"),
                         "comments": []
                     })
-                    save_notes(notes)
+                    update_and_save(notes)
                     st.session_state.current_index = len(notes) - 1
                     st.session_state.editing = False
                     st.rerun()
@@ -73,7 +69,7 @@ if current_tab == "忏悔间":
                     notes[idx]["title"] = title
                     notes[idx]["content"] = content
                     notes[idx]["date"] = datetime.datetime.now().strftime("%m/%d %H:%M")
-                    save_notes(notes)
+                    update_and_save(notes)
                     st.session_state.editing = False
                     st.rerun()
  
@@ -94,7 +90,7 @@ if current_tab == "忏悔间":
             with col2:
                 if st.button("赎罪", type="secondary"):
                     notes.pop(idx)
-                    save_notes(notes)
+                    update_and_save(notes)
                     st.session_state.current_index = None
                     st.session_state.editing = False
                     load_notes.clear()
@@ -122,7 +118,7 @@ if current_tab == "忏悔间":
                     "time": datetime.datetime.now().strftime("%m/%d %H:%M")
                 }
                 notes[idx]["comments"].append(new_c)
-                save_notes(notes)
+                update_and_save(notes)
                 st.rerun()
 
 if current_tab == "我想她了":
