@@ -20,17 +20,6 @@ st.title("Ocegret Archive")
 st.write("晨峻，今天的你忏悔了吗。")
 
 notes = load_notes()
-with st.sidebar:
-    st.sidebar.title("功能区")
-    if st.button("+ 新建笔记"):
-        st.session_state.current_index = -1
-        st.session_state.editing = True
-    
-    for i, note in enumerate(notes):
-        preview = note["title"][:15] if note["title"] else "空笔记"
-        if st.button(f"{preview}  \n{note['date']}", key=f"note_{i}"):
-            st.session_state.current_index = i
-            st.session_state.editing = False
 
 ct = st.radio(
     "选择页面", 
@@ -73,6 +62,17 @@ if ct == "忏悔间":
                     save_notes(notes)
                     st.session_state.editing = False
                     st.rerun()
+    with st.sidebar:
+        st.sidebar.title("忏悔区")
+        if st.button("+ 新的告解"):
+           st.session_state.current_index = -1
+           st.session_state.editing = True
+    
+    for i, note in enumerate(notes):
+        preview = note["title"][:15] if note["title"] else "无告解"
+        if st.button(f"{preview}  \n{note['date']}", key=f"note_{i}"):
+            st.session_state.current_index = i
+            st.session_state.editing = False
  
     else:
         if idx is None:
@@ -104,7 +104,7 @@ if ct == "忏悔间":
 
             for c in note["comments"]:
                 with st.chat_message("user(zhanwei)"):
-                    st.write(f"*{c["time"]}*")
+                    st.write(f"*{c['time']}*")
                     st.write(c["text"])
             c_text = st.chat_input(placeholder="追加审判中~请对告解者作出评判吧", height=200)
             if c_text:
