@@ -44,7 +44,7 @@ if ct == "忏悔间":
             de_title = "" if new else notes[idx]["title"]
             de_content = "" if new else notes[idx]["content"]
             title = st.text_input("罪业",value=de_title,placeholder="请为罪业命名")
-            content = st.text_area("悔恨",value=de_content,placeholder="向天使安安大人忏悔些什么吧...", height=400)
+            content = st.text_area("悔恨",value=de_content,placeholder="向天使安安大人忏悔些什么吧...", height=200)
             
             if st.button("保存"):
                 if new:
