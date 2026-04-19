@@ -4,12 +4,19 @@ import json, os, datetime
 NOTES_FILE = "notes.json"
 st.set_page_config(layout="wide")
 
-@st.cache_data
 def load_notes():
     if not os.path.exists(NOTES_FILE):
         return []
     with open(NOTES_FILE, "r", encoding="utf-8") as f:
-        return json.load(f)
+        try:
+            return json.load(f)
+        except:
+            return []
+
+def update_and_save(notes_data):
+    with open(NOTES_FILE, "w", encoding="utf-8") as f:
+        json.dump(notes_data, f, ensure_ascii=False, indent=2)
+    st.session_state.notes = notes_data
 
 def save_notes(notes):
     with open(NOTES_FILE, "w", encoding="utf-8") as f:
