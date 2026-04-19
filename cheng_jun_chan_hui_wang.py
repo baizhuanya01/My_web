@@ -60,7 +60,7 @@ if current_tab == "忏悔间":
                     })
                     save_notes(notes)
                     st.session_state.current_index = len(notes) - 1
-                    load_notes.clear()
+                    st.session_state.editing = False
                     st.rerun()
                 else:
                     notes[idx]["title"] = title
