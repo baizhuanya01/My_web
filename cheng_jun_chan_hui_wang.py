@@ -23,7 +23,7 @@ notes = load_notes()
 
 ct = st.radio(
     "选择页面", 
-    ["忏悔间", "我想她了"], 
+    ["忏悔间", "思念堂"], 
     horizontal=True, 
     label_visibility="collapsed"
 )
@@ -50,7 +50,7 @@ if ct == "忏悔间":
                         "title": title,
                         "content": content,
                         "date": datetime.datetime.now().strftime("%m/%d %H:%M"),
-                        "comment": []
+                        "comments": []
                     })
                     save_notes(notes)
                     st.session_state.current_index = len(notes) - 1
@@ -94,15 +94,20 @@ if ct == "忏悔间":
                 with st.chat_message("user(zhanwei)"):
                     st.write(f"*{c['time']}*")
                     st.write(c["text"])
-            c_text = st.text_input(label="追加审判",placeholder="追加审判中~请对告解者作出评判吧",label_visibility="collapsed")
-            if c_text:
-                new_c = {
-                    "text": c_text,
-                    "time": datetime.datetime.now().strftime("%m/%d %H:%M")
-                }
-                notes[idx]["comments"].append(new_c)
-                save_notes(notes)
-                st.rerun()
+            with st.form(key="comment_form", clear_on_submit=True):
+                c_text = st.text_input(label="追加审判", placeholder="追加审判中~请对告解者作出评判吧", label_visibility="collapsed")
+                submit_btn = st.form_submit_button("发送审判")
+    
+                # 只有当点击了提交按钮，并且输入框有字的时候才处理
+                if submit_btn and c_text:
+                   new_c = {
+                  "text": c_text,
+                  "time": datetime.datetime.now().strftime("%m/%d %H:%M")
+                   }
+                   notes[idx]["comments"].append(new_c)
+                   save_notes(notes)
+                   st.rerun()
+        
     with st.sidebar:
         st.sidebar.title("忏悔区")
         if st.button("+ 新的告解"):
