@@ -93,7 +93,6 @@ if current_tab == "忏悔间":
                     update_and_save(notes)
                     st.session_state.current_index = None
                     st.session_state.editing = False
-                    load_notes.clear()
                     st.rerun()
 
             st.divider()
@@ -128,6 +127,7 @@ if current_tab == "我想她了":
     idx = st.session_state.get("current_index", None)
     
 with st.sidebar:
+    safe_index = current_idx if (current_idx is not None and current_idx != -1 and current_idx < len(notes)) else 0
     if current_tab == "忏悔间":
         if st.button("新的告解"):
             st.session_state.current_index = -1
