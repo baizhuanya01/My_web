@@ -99,7 +99,7 @@ if ct == "忏悔间":
                     st.session_state.current_index = None
                     st.session_state.editing = False
                     st.rerun()
-       st.markdown（note["content"]）
+                    
             st.divider()
 
             # --- 评论区及追加审判 ---
