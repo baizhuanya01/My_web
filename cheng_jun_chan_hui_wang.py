@@ -94,7 +94,7 @@ if ct == "忏悔间":
                 with st.chat_message("user(zhanwei)"):
                     st.write(f"*{c['time']}*")
                     st.write(c["text"])
-            c_text = st.chat_input(placeholder="追加审判中~请对告解者作出评判吧", height=200)
+            c_text = st.text_input(placeholder="追加审判中~请对告解者作出评判吧")
             if c_text:
                 new_c = {
                     "text": c_text,
