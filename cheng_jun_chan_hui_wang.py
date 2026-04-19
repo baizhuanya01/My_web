@@ -34,34 +34,41 @@ if ct == "忏悔间":
 
     idx = st.session_state.get("current_index", None)
 
-    if st.session_state.editing == True:
+if st.session_state.editing == True:
         if idx is None:
             st.info("你的罪业正在每一秒的颓唐中持续累积.ing")
         else:
             new = (idx == -1)
             de_title = "" if new else notes[idx]["title"]
             de_content = "" if new else notes[idx]["content"]
-            title = st.text_input("罪业",value=de_title,placeholder="请为罪业命名")
-            content = st.text_area("悔恨",value=de_content,placeholder="向天使安安大人忏悔些什么吧...", height=400)
             
-            if st.button("保存"):
-                if new:
-                    notes.append({
-                        "title": title,
-                        "content": content,
-                        "date": datetime.datetime.now().strftime("%m/%d %H:%M"),
-                        "comments": []
-                    })
-                    save_notes(notes)
-                    st.session_state.current_index = len(notes) - 1
-                    st.rerun()
-                else:
-                    notes[idx]["title"] = title
-                    notes[idx]["content"] = content
-                    notes[idx]["date"] = datetime.datetime.now().strftime("%m/%d %H:%M")
-                    save_notes(notes)
-                    st.session_state.editing = False
-                    st.rerun()
+            # ======== 这里开始用表单包裹 ========
+            with st.form(key="edit_confession_form"):
+                title = st.text_input("罪业", value=de_title, placeholder="请为罪业命名")
+                content = st.text_area("悔恨", value=de_content, placeholder="向天使安安大人忏悔些什么吧...", height=400)
+                
+                # 表单里的按钮必须用 st.form_submit_button
+                submit_save = st.form_submit_button("保存")
+                
+                if submit_save:
+                    if new:
+                        notes.append({
+                            "title": title,
+                            "content": content,
+                            "date": datetime.datetime.now().strftime("%m/%d %H:%M"),
+                            "comments":[]  # 注意这里我帮你修正成了复数 comments
+                        })
+                        save_notes(notes)
+                        st.session_state.current_index = len(notes) - 1
+                        st.session_state.editing = False # 保存后退出编辑模式
+                        st.rerun()
+                    else:
+                        notes[idx]["title"] = title
+                        notes[idx]["content"] = content
+                        notes[idx]["date"] = datetime.datetime.now().strftime("%m/%d %H:%M")
+                        save_notes(notes)
+                        st.session_state.editing = False
+                        st.rerun()
     else:
         if idx is None:
             st.info("你的罪业正在每一秒的颓唐中持续累积.ing")
