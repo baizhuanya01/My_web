@@ -15,6 +15,8 @@ def save_notes(notes):
 
 if "editing" not in st.session_state:
     st.session_state.editing = False
+if "current_index" not in st.session_state:
+    st.session_state.current_index = None
 
 st.title("Ocegret Archive")
 st.write("晨峻，今天的你忏悔了吗。")
