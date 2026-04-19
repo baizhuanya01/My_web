@@ -116,12 +116,18 @@ if ct == "忏悔间":
         if st.button("+ 新的告解"):
            st.session_state.current_index = -1
            st.session_state.editing = True
+           st.rerun()
 
         if notes:
             options = [f"{i}:{n['title'][:10]}" for i, n in enumerate(notes)]
-            choice = st.selectbox("选择告解", options)
+            # 默认选中当前索引，如果是新建(-1)则选第一个
+            default_idx = max(0, st.session_state.current_index) if st.session_state.current_index is not None else 0
+            if default_idx >= len(options):
+                default_idx = 0
+            choice = st.selectbox("选择告解", options, index=default_idx)
             idx = int(choice.split(":")[0])
-            if st.session_state.current_index != idx:
+            # 只有当不是新建模式时才更新
+            if st.session_state.current_index != -1 and st.session_state.current_index != idx:
                 st.session_state.current_index = idx
                 st.session_state.editing = False
                 st.rerun()
