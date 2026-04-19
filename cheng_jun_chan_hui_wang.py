@@ -111,14 +111,16 @@ if ct == "忏悔间":
     with st.sidebar:
         st.sidebar.title("忏悔区")
         if st.button("+ 新的告解"):
-           st.session_state.current_index = -1
-           st.session_state.editing = True
+            st.session_state.current_index = -1
+            st.session_state.editing = True
+            st.rerun()
     
         for i, note in enumerate(notes):
             preview = note["title"][:15] if note["title"] else "无告解"
-            if st.button(f"{preview}  \n{note['date']}", key=f"note_{i}"):
+            if st.selectbox(f"{preview}  \n{note['date']}", key=f"note_{i}"):
                 st.session_state.current_index = i
                 st.session_state.editing = False
+                st.rerun()
                 
 if ct == "思念堂":
     st.write("这里是用来给你宣泄有关于她的情绪的，我会找办法把这里锁上只向你开放。")
