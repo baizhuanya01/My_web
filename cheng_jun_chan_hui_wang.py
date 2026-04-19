@@ -98,8 +98,14 @@ if ct == "忏悔间":
                     st.write(f"*{c['time']}*")
                     st.write(c["text"])
             with st.form(key="comment_form", clear_on_submit=True):
-                c_text = st.text_input(label="追加审判", placeholder="追加审判中~请对告解者作出评判吧", label_visibility="collapsed")
-                submit_btn = st.form_submit_button("发送审判")
+                c_text = st.text_input(label="追加审判", placeholder="追加审判中~请对告解者作出评判吧(回车发送)", label_visibility="collapsed")
+                submit_btn = st.form_submit_button("发送审判", type="primary")
+                st.markdown("""
+                <style>
+                button[kind="primaryFormSubmit"] {display: none;}
+                </style>
+                """, unsafe_allow_html=True)
+
     
                 # 只有当点击了提交按钮，并且输入框有字的时候才处理
                 if submit_btn and c_text:
