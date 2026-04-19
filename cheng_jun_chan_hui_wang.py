@@ -123,7 +123,6 @@ if current_tab == "忏悔间":
                 }
                 notes[idx]["comments"].append(new_c)
                 save_notes(notes)
-                load_notes.clear()
                 st.rerun()
 
 if current_tab == "我想她了":
