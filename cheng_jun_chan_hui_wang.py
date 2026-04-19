@@ -68,11 +68,11 @@ if ct == "忏悔间":
            st.session_state.current_index = -1
            st.session_state.editing = True
     
-    for i, note in enumerate(notes):
-        preview = note["title"][:15] if note["title"] else "无告解"
-        if st.button(f"{preview}  \n{note['date']}", key=f"note_{i}"):
-            st.session_state.current_index = i
-            st.session_state.editing = False
+        for i, note in enumerate(notes):
+            preview = note["title"][:15] if note["title"] else "无告解"
+            if st.button(f"{preview}  \n{note['date']}", key=f"note_{i}"):
+                st.session_state.current_index = i
+                st.session_state.editing = False
  
     else:
         if idx is None:
