@@ -5,7 +5,7 @@ NOTES_FILE = "notes.json"
 
 def load_notes():
     if not os.path.exists(NOTES_FILE):
-        return []
+        return[]
     with open(NOTES_FILE, "r", encoding="utf-8") as f:
         return json.load(f)
 
@@ -22,35 +22,47 @@ st.write("晨峻，今天的你忏悔了吗。")
 notes = load_notes()
 
 ct = st.radio(
-    "选择页面", 
-    ["忏悔间", "思念堂"], 
+    "选择页面",["忏悔间", "我想她了"], 
     horizontal=True, 
     label_visibility="collapsed"
 )
+
 if ct == "忏悔间":
     st.write("这里是用来给你进行学习以及生活上的反思的。\n当然也可以把笔记传上来，我会保留这个区域的访问权限。")
 
     st.divider()
 
+    # ================= 核心优化1：将侧边栏代码提前 =================
+    # 把侧边栏移到顶部，这样点击时能瞬间更新状态，不用点两次
+    with st.sidebar:
+        st.sidebar.title("忏悔区")
+        if st.button("+ 新的告解"):
+            st.session_state.current_index = -1
+            st.session_state.editing = True
+            # 【杀手锏】点击新建时，直接往大脑(session)里强行注入“空记忆”
+            st.session_state["edit_title"] = ""
+            st.session_state["edit_content"] = ""
+    
+        for i, note in enumerate(notes):
+            preview = note["title"][:15] if note["title"] else "无告解"
+            if st.button(f"{preview}  \n{note['date']}", key=f"note_{i}"):
+                st.session_state.current_index = i
+                st.session_state.editing = False
+
     idx = st.session_state.get("current_index", None)
 
-# ================= 1. 编辑/新建模式 =================
+    # ================= 1. 编辑/新建模式 =================
     if st.session_state.editing == True:
         if idx is None:
             st.info("你的罪业正在每一秒的颓唐中持续累积.ing")
         else:
             new = (idx == -1)
-            de_title = "" if new else notes[idx]["title"]
-            de_content = "" if new else notes[idx]["content"]
             
-            # 【核心修复】：为新建和每篇旧日记动态生成独一无二的表单 Key
-            # 如果是新建，提交后自动清空缓存 (clear_on_submit=True)
-            form_key = "form_new" if new else f"form_edit_{idx}"
-            
-            with st.form(key=form_key, clear_on_submit=new):
-                # 输入框也必须加上动态的 key，彻底隔绝组件缓存污染
-                title = st.text_input("罪业", value=de_title, placeholder="请为罪业命名", key=f"title_{form_key}")
-                content = st.text_area("悔恨", value=de_content, placeholder="向天使安安大人忏悔些什么吧...", height=400, key=f"content_{form_key}")
+            # 使用固定名字的表单，彻底避免动态 Key 带来的缓存吞数据问题
+            with st.form(key="edit_confession_form"):
+                # 这里去掉了坑人的 value=...，直接让输入框绑定专属的 key
+                title = st.text_input("罪业", placeholder="请为罪业命名", key="edit_title")
+                content = st.text_area("悔恨", placeholder="向天使安安大人忏悔些什么吧...", height=400, key="edit_content")
                 
                 submit_save = st.form_submit_button("停止")
                 
@@ -70,7 +82,7 @@ if ct == "忏悔间":
                         notes[idx]["date"] = datetime.datetime.now().strftime("%m/%d %H:%M")
                         save_notes(notes)
                     
-                    st.session_state.editing = False # 保存后自动退出编辑模式
+                    st.session_state.editing = False
                     st.rerun()
 
     # ================= 2. 展示/阅读模式 =================
@@ -80,16 +92,16 @@ if ct == "忏悔间":
         else:
             note = notes[idx]
             
-            # --- 告解正文展示区 ---
             st.subheader(note["title"])
-            st.markdown(note["content"]) # 这里就是展示正文的代码
+            st.markdown(note["content"])
             st.caption(f"最后一次忏悔时间：{note['date']}")
             
-            # --- 按钮操作区 ---
             col1, col2 = st.columns(2)
             with col1:
                 if st.button("悔改"):
                     st.session_state.editing = True
+                    st.session_state["edit_title"] = note["title"]
+                    st.session_state["edit_content"] = note["content"]
                     st.rerun()
 
             with col2:
@@ -99,10 +111,10 @@ if ct == "忏悔间":
                     st.session_state.current_index = None
                     st.session_state.editing = False
                     st.rerun()
-                    
+
             st.divider()
 
-            # --- 评论区及追加审判 ---
+            # ================= 3. 追加审判 =================
             st.markdown("### ⚖追加审判⚖")
             if "comments" not in note or not isinstance(note["comments"], list) :
                 note["comments"] = []
@@ -124,19 +136,6 @@ if ct == "忏悔间":
                     notes[idx]["comments"].append(new_c)
                     save_notes(notes)
                     st.rerun()
-
-    # ================= 3. 侧边栏 =================
-    with st.sidebar:
-        st.sidebar.title("忏悔区")
-        if st.button("+ 新的告解"):
-           st.session_state.current_index = -1
-           st.session_state.editing = True
-    
-        for i, note in enumerate(notes):
-            preview = note["title"][:15] if note["title"] else "无告解"
-            if st.button(f"{preview}  \n{note['date']}", key=f"note_{i}"):
-                st.session_state.current_index = i
-                st.session_state.editing = False
 
 # ================= 4. 其他页面 =================
 if ct == "思念堂":
