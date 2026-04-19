@@ -34,6 +34,7 @@ if ct == "忏悔间":
 
     idx = st.session_state.get("current_index", None)
 
+    # ================= 1. 编辑/新建模式 =================
     if st.session_state.editing == True:
         if idx is None:
             st.info("你的罪业正在每一秒的颓唐中持续累积.ing")
@@ -41,7 +42,7 @@ if ct == "忏悔间":
             new = (idx == -1)
             de_title = "" if new else notes[idx]["title"]
             de_content = "" if new else notes[idx]["content"]
-
+            
             with st.form(key="edit_confession_form"):
                 title = st.text_input("罪业", value=de_title, placeholder="请为罪业命名")
                 content = st.text_area("悔恨", value=de_content, placeholder="向天使安安大人忏悔些什么吧...", height=400)
@@ -58,23 +59,28 @@ if ct == "忏悔间":
                         })
                         save_notes(notes)
                         st.session_state.current_index = len(notes) - 1
-                        st.session_state.editing = False # 保存后退出编辑模式
-                        st.rerun()
                     else:
                         notes[idx]["title"] = title
                         notes[idx]["content"] = content
                         notes[idx]["date"] = datetime.datetime.now().strftime("%m/%d %H:%M")
                         save_notes(notes)
-                        st.session_state.editing = False
-                        st.rerun()
+                    
+                    st.session_state.editing = False # 保存后自动退出编辑模式
+                    st.rerun()
+
+    # ================= 2. 展示/阅读模式 =================
     else:
         if idx is None:
             st.info("你的罪业正在每一秒的颓唐中持续累积.ing")
         else:
             note = notes[idx]
+            
+            # --- 告解正文展示区 ---
             st.subheader(note["title"])
-            st.markdown(note["content"])
+            st.markdown(note["content"]) # 这里就是展示正文的代码
             st.caption(f"最后一次忏悔时间：{note['date']}")
+            
+            # --- 按钮操作区 ---
             col1, col2 = st.columns(2)
             with col1:
                 if st.button("悔改"):
@@ -91,28 +97,30 @@ if ct == "忏悔间":
 
             st.divider()
 
+            # --- 评论区及追加审判 ---
             st.markdown("### ⚖追加审判⚖")
             if "comments" not in note or not isinstance(note["comments"], list) :
                 note["comments"] = []
 
             for c in note["comments"]:
-                with st.chat_message("user(zhanwei)"):
+                with st.chat_message("user"):
                     st.write(f"*{c['time']}*")
                     st.write(c["text"])
-            with st.form(key="comment_form", clear_on_submit=True):
+            
+            with st.form(key=f"comment_form_{idx}", clear_on_submit=True):
                 c_text = st.text_input(label="追加审判", placeholder="追加审判中~请对告解者作出评判吧", label_visibility="collapsed")
                 submit_btn = st.form_submit_button("发送审判")
     
-                # 只有当点击了提交按钮，并且输入框有字的时候才处理
                 if submit_btn and c_text:
-                   new_c = {
-                  "text": c_text,
-                  "time": datetime.datetime.now().strftime("%m/%d %H:%M")
-                   }
-                   notes[idx]["comments"].append(new_c)
-                   save_notes(notes)
-                   st.rerun()
-        
+                    new_c = {
+                        "text": c_text,
+                        "time": datetime.datetime.now().strftime("%m/%d %H:%M")
+                    }
+                    notes[idx]["comments"].append(new_c)
+                    save_notes(notes)
+                    st.rerun()
+
+    # ================= 3. 侧边栏 =================
     with st.sidebar:
         st.sidebar.title("忏悔区")
         if st.button("+ 新的告解"):
@@ -124,6 +132,7 @@ if ct == "忏悔间":
             if st.button(f"{preview}  \n{note['date']}", key=f"note_{i}"):
                 st.session_state.current_index = i
                 st.session_state.editing = False
-                
+
+# ================= 4. 其他页面 =================
 if ct == "思念堂":
     st.write("这里是用来给你宣泄有关于她的情绪的，我会找办法把这里锁上只向你开放。")
