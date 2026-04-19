@@ -37,7 +37,7 @@ ct = st.radio(
     ["忏悔间", "我想她了"], 
     horizontal=True, 
     label_visibility="collapsed"
-))
+)
 if ct == "忏悔间":
     st.write("这里是用来给你进行学习以及生活上的反思的。\n当然也可以把笔记传上来，我会保留这个区域的访问权限。")
 
